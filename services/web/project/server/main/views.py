@@ -10,9 +10,16 @@ from server.main.tasks import create_task
 main_blueprint = Blueprint('main', __name__, )
 
 
-@main_blueprint.route('/', methods=['GET'])
-def hello():
-    return 'Hello Word'
+@main_blueprint.route("/search/<search_word>", methods=['GET'])
+def search(search_word=None):
+    
+    response_object = {
+        'word': search_word,
+        'count': 1,
+        'time': 0
+    }
+
+    return jsonify(response_object)
 
 
 @main_blueprint.route('/', methods=['GET'])

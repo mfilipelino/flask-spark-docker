@@ -1,23 +1,61 @@
 # services/web/server/main/views.py
-
+import time
 
 import redis
 from rq import Queue, push_connection, pop_connection
 from flask import current_app, render_template, Blueprint, jsonify, request
 
-from server.main.tasks import create_task
+from server.main.tasks import create_task, create_task_file, create_task_test
 
 main_blueprint = Blueprint('main', __name__, )
 
 
 @main_blueprint.route("/search/<search_word>", methods=['GET'])
 def search(search_word=None):
-    
+
+    result = create_task_test()
     response_object = {
         'word': search_word,
         'count': 1,
-        'time': 0
+        'time': 0,
+        'result': result
     }
+
+    return jsonify(response_object)
+
+
+@main_blueprint.route("/test", methods=['GET'])
+def test():
+    q = Queue()
+    task = q.enqueue(create_task_test)
+    task_id = task.get_id()
+    while True:
+        time.sleep(1)
+        task = q.fetch_job(task_id)
+        if task:
+            status = task.get_status()
+            if status == 'finished':
+                response_object = {
+                    'status': 'success',
+                    'data': {
+                        'task_id': task_id,
+                        'task_status': status,
+                        'task_result': task.result,
+                    }
+                }
+                break
+            elif status == 'failed':
+                response_object = {
+                    'status': 'failed',
+                    'data': {
+                        'task_id': task_id,
+                        'task_status': status,
+                    }
+                }
+                break
+        else:
+            response_object = {'status': 'error'}
+            break
 
     return jsonify(response_object)
 

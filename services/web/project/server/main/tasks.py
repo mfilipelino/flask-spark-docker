@@ -16,3 +16,29 @@ def create_task(words):
     counts = data.map(lambda word: (word, 1)).reduceByKey(add).collect()
     sc.stop()
     return dict(counts)
+
+
+def tokenize(text):
+    return text.split()
+
+
+def create_task_file():
+    conf = SparkConf().setAppName('letter count')
+    sc = SparkContext(conf=conf)
+    # text = sc.textFile('file1.csv')
+    words = ['test', 'teste1', 'test', 'teste1']
+    data = sc.parallelize(words)
+    counts = data.map(lambda word: (word, 1)).reduceByKey(add).collect()
+    sc.stop()
+    return dict(counts)
+
+
+def create_task_test():
+    conf = SparkConf().setAppName('letter count')
+    sc = SparkContext(conf=conf)
+    words = 'test teste1 test teste1'
+    seq = words.split()
+    data = sc.parallelize(seq)
+    counts = data.map(lambda word: (word, 1)).reduceByKey(add).collect()
+    sc.stop()
+    return dict(counts)

@@ -29,3 +29,9 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     """Production configuration."""
     DEBUG = False
+
+
+class DevelopmentConfigDev(BaseConfig):
+    """Develop local."""
+    DEBUG = False
+    REDIS_URL = 'redis://0.0.0.0:6379/0'

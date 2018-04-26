@@ -7,7 +7,13 @@ from flask import current_app, render_template, Blueprint, jsonify, request
 
 from server.main.tasks import create_task
 
-main_blueprint = Blueprint('main', __name__,)
+main_blueprint = Blueprint('main', __name__, )
+
+
+@main_blueprint.route('/', methods=['GET'])
+def hello():
+    return 'Hello Word'
+
 
 @main_blueprint.route('/', methods=['GET'])
 def home():

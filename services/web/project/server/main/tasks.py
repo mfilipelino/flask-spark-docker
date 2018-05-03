@@ -15,11 +15,9 @@ def tokenize(text):
 def create_task_file():
     conf = SparkConf().setAppName('letter count')
     sc = SparkContext(conf=conf)
-    # text = sc.textFile('file1.csv')
-    words = ['test', 'teste1', 'test', 'teste1']
-    data = sc.parallelize(words)
-    counts = data.map(lambda word: (word, 1)).reduceByKey(add).collect()
-    sc.stop()
+    files = sc.textFile("file1.csv")
+    words = files.flatMap(tokenize)
+    counts = words.map(lambda word: (word, 1)).reduceByKey(add).collect()
     return dict(counts)
 
 
